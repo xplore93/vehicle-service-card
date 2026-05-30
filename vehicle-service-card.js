@@ -965,10 +965,37 @@ if(!customElements.get("vehicle-service-card-editor"))
 if(!customElements.get("vehicle-service-compact-card-editor"))
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 
-// Fire ll-custom-cards-updated immediately and with delays
-function _vsmNotifyHA() {
-  window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
+// Register cards
+window.customCards = window.customCards || [];
+window.customCards = window.customCards.filter(
+  c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card"
+);
+window.customCards.push(
+  {type:"vehicle-service-card", name:"Vehicle Service Manager", description:"Service-Status, Reparaturen und Reifentracking", preview:true},
+  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager – Kompakt", description:"Kompakte Icon-Übersicht mit Farbstatus", preview:true}
+);
+
+// Notify HA - fire on window AND document, immediately and after delays
+// This covers all HA versions and loading scenarios
+function _vsmRegister() {
+  ["window","document"].forEach(function(t) {
+    var target = t === "window" ? window : document;
+    target.dispatchEvent(new CustomEvent("ll-custom-cards-updated", {bubbles:true, composed:true}));
+  });
 }
-_vsmNotifyHA();
-setTimeout(_vsmNotifyHA, 500);
-setTimeout(_vsmNotifyHA, 2000);
+_vsmRegister();
+setTimeout(_vsmRegister, 500);
+setTimeout(_vsmRegister, 2000);
+setTimeout(_vsmRegister, 5000);
+
+// Also use MutationObserver to catch hui-card-picker when it appears in DOM
+var _vsmObserver = new MutationObserver(function(mutations) {
+  mutations.forEach(function(m) {
+    m.addedNodes.forEach(function(n) {
+      if (n.nodeName && n.nodeName.toLowerCase().includes("card-picker")) {
+        _vsmRegister();
+      }
+    });
+  });
+});
+_vsmObserver.observe(document.body || document.documentElement, {childList:true, subtree:true});
