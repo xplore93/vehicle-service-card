@@ -1,5 +1,5 @@
 /**
- * Vehicle Service Manager - Lovelace Cards v1.2.0
+ * Vehicle Service Manager - Lovelace Cards v1.3.0
  * Includes: vehicle-service-card + vehicle-service-compact-card
  */
 
@@ -230,7 +230,7 @@ if(!customElements.get("vehicle-service-card-editor"))
 if(!customElements.get("vehicle-service-compact-card-editor"))
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 
-console.info("%c VEHICLE-SERVICE-CARD %c v1.2.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
+console.info("%c VEHICLE-SERVICE-CARD %c v1.3.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
 
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card");
