@@ -235,8 +235,8 @@ console.info("%c VEHICLE-SERVICE-CARD %c v1.2.0 ","background:#1976D2;color:#fff
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card");
 window.customCards.push(
-  {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking", preview:true},
-  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt", description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",  preview:true}
+  {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking", preview:false},
+  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt", description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",  preview:false}
 );
 window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
 setTimeout(()=>window.dispatchEvent(new CustomEvent("ll-custom-cards-updated")),1000);
