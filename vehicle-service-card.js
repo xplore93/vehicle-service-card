@@ -1,5 +1,5 @@
 /**
- * Vehicle Service Manager - Lovelace Cards v1.3.0
+ * Vehicle Service Manager - Lovelace Cards v1.4.0
  * Includes: vehicle-service-card + vehicle-service-compact-card
  */
 
@@ -51,7 +51,7 @@ function inp(id,type,ph,val="",extra=""){return`<input id="${id}" type="${type}"
 class VehicleServiceCard extends HTMLElement {
   constructor(){super();this.attachShadow({mode:"open"});this._hass=null;this._vehicles=[];this._vehicleIds=[];this._cur=0;this._tab="status";this._loading=true;this._err=null;this._modal=null;}
   setConfig(c){this._config=c;}
-  set hass(h){const first=!this._hass;this._hass=h;if(first)this._load();}
+  set hass(h){const first=!this._hass;this._hass=h;if(first&&h)this._load();}
   static getStubConfig(){return{};}
   static getConfigElement(){return document.createElement("vehicle-service-card-editor");}
   getCardSize(){return 8;}
@@ -66,9 +66,21 @@ class VehicleServiceCard extends HTMLElement {
   _v(){return this._vehicles[this._cur];}
   _vid(){return this._vehicleIds[this._cur];}
 
+  _placeholder(){
+    return '<div style="padding:16px">'
+      +'<div style="font-size:14px;font-weight:500;margin-bottom:8px">Vehicle Service Manager</div>'
+      +'<div style="font-size:11px;color:#888;margin-bottom:10px">Service-Status, Reparaturen und Reifentracking</div>'
+      +'<div style="display:flex;gap:6px">'
+      +['mdi:oil','mdi:clipboard-check-outline','mdi:car-brake-alert','mdi:fan'].map(function(i){
+        return '<div style="background:#EAF3DE;border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center"><ha-icon icon="'+i+'" style="color:#3B6D11;--mdc-icon-size:20px"></ha-icon></div>';
+      }).join("")
+      +'</div></div>';
+  }
+
   _paint(){
     let body="";
-    if(this._loading)body=`<div class="loading"><div class="spin"></div>Lade\u2026</div>`;
+    if(!this._hass){body=this._placeholder();}
+    else if(this._loading)body=`<div class="loading"><div class="spin"></div>Lade\u2026</div>`;
     else if(this._err)body=`<div class="errbox"><b>Fehler</b><br>${this._err}</div>`;
     else if(!this._vehicles.length)body=`<div class="empty-big">Keine Fahrzeuge.<br><b>Einstellungen \u2192 Integrationen \u2192 + \u2192 Vehicle Service Manager</b></div>`;
     else body=this._main();
@@ -178,7 +190,7 @@ class VehicleServiceCard extends HTMLElement {
 class VehicleServiceCompactCard extends HTMLElement {
   constructor(){super();this.attachShadow({mode:"open"});this._hass=null;this._vehicles=[];this._vehicleIds=[];this._cur=0;this._loading=true;this._err=null;}
   setConfig(c){this._config=c;}
-  set hass(h){const first=!this._hass;this._hass=h;if(first)this._load();}
+  set hass(h){const first=!this._hass;this._hass=h;if(first&&h)this._load();}
   static getStubConfig(){return{};}
   static getConfigElement(){return document.createElement("vehicle-service-compact-card-editor");}
   getCardSize(){return 3;}
@@ -191,9 +203,21 @@ class VehicleServiceCompactCard extends HTMLElement {
   }
   _v(){return this._vehicles[this._cur];}
 
+  _placeholder(){
+    return '<div style="padding:16px">'
+      +'<div style="font-size:14px;font-weight:500;margin-bottom:8px">Vehicle Service Manager</div>'
+      +'<div style="font-size:11px;color:#888;margin-bottom:10px">Service-Status, Reparaturen und Reifentracking</div>'
+      +'<div style="display:flex;gap:6px">'
+      +['mdi:oil','mdi:clipboard-check-outline','mdi:car-brake-alert','mdi:fan'].map(function(i){
+        return '<div style="background:#EAF3DE;border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center"><ha-icon icon="'+i+'" style="color:#3B6D11;--mdc-icon-size:20px"></ha-icon></div>';
+      }).join("")
+      +'</div></div>';
+  }
+
   _paint(){
     let body="";
-    if(this._loading)body=`<div class="loading"><div class="spin"></div></div>`;
+    if(!this._hass){body=this._placeholder();}
+    else if(this._loading)body=`<div class="loading"><div class="spin"></div></div>`;
     else if(this._err)body=`<div style="padding:8px;color:#f44;font-size:11px">Fehler: ${this._err}</div>`;
     else if(!this._vehicles.length)body=`<div style="padding:8px;font-size:11px;color:var(--secondary-text-color)">Keine Fahrzeuge</div>`;
     else body=this._main();
@@ -230,13 +254,13 @@ if(!customElements.get("vehicle-service-card-editor"))
 if(!customElements.get("vehicle-service-compact-card-editor"))
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 
-console.info("%c VEHICLE-SERVICE-CARD %c v1.3.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
+console.info("%c VEHICLE-SERVICE-CARD %c v1.4.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
 
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card");
 window.customCards.push(
-  {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking", preview:false},
-  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt", description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",  preview:false}
+  {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking", preview:true},
+  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt", description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",  preview:true}
 );
 window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
 setTimeout(()=>window.dispatchEvent(new CustomEvent("ll-custom-cards-updated")),1000);

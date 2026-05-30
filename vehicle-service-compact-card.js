@@ -1,5 +1,5 @@
 /**
- * Vehicle Service Manager - Lovelace Cards v1.3.0
+ * Vehicle Service Manager - Lovelace Cards v1.4.0
  * Includes: vehicle-service-card + vehicle-service-compact-card
  */
 
@@ -51,7 +51,7 @@ function inp(id,type,ph,val="",extra=""){return`<input id="${id}" type="${type}"
 class VehicleServiceCompactCard extends HTMLElement {
   constructor(){super();this.attachShadow({mode:"open"});this._hass=null;this._vehicles=[];this._vehicleIds=[];this._cur=0;this._loading=true;this._err=null;}
   setConfig(c){this._config=c;}
-  set hass(h){const first=!this._hass;this._hass=h;if(first)this._load();}
+  set hass(h){const first=!this._hass;this._hass=h;if(first&&h)this._load();}
   static getStubConfig(){return{};}
   static getConfigElement(){return document.createElement("vehicle-service-compact-card-editor");}
   getCardSize(){return 3;}
@@ -64,9 +64,21 @@ class VehicleServiceCompactCard extends HTMLElement {
   }
   _v(){return this._vehicles[this._cur];}
 
+  _placeholder(){
+    return '<div style="padding:16px">'
+      +'<div style="font-size:14px;font-weight:500;margin-bottom:8px">Vehicle Service Manager</div>'
+      +'<div style="font-size:11px;color:#888;margin-bottom:10px">Service-Status, Reparaturen und Reifentracking</div>'
+      +'<div style="display:flex;gap:6px">'
+      +['mdi:oil','mdi:clipboard-check-outline','mdi:car-brake-alert','mdi:fan'].map(function(i){
+        return '<div style="background:#EAF3DE;border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center"><ha-icon icon="'+i+'" style="color:#3B6D11;--mdc-icon-size:20px"></ha-icon></div>';
+      }).join("")
+      +'</div></div>';
+  }
+
   _paint(){
     let body="";
-    if(this._loading)body=`<div class="loading"><div class="spin"></div></div>`;
+    if(!this._hass){body=this._placeholder();}
+    else if(this._loading)body=`<div class="loading"><div class="spin"></div></div>`;
     else if(this._err)body=`<div style="padding:8px;color:#f44;font-size:11px">Fehler: ${this._err}</div>`;
     else if(!this._vehicles.length)body=`<div style="padding:8px;font-size:11px;color:var(--secondary-text-color)">Keine Fahrzeuge</div>`;
     else body=this._main();
@@ -87,25 +99,18 @@ class VehicleServiceCompactCard extends HTMLElement {
   _css(){return`ha-card{background:var(--card-background-color,#1c1c1e);border-radius:12px}.w{padding:10px 12px 12px;font-family:var(--primary-font-family,sans-serif);color:var(--primary-text-color)}.loading{display:flex;align-items:center;justify-content:center;padding:12px}.spin{width:16px;height:16px;border:2px solid var(--divider-color);border-top-color:var(--primary-color);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.cpills{display:flex;gap:4px;margin-bottom:8px}.cpill{padding:2px 6px;border:1px solid var(--divider-color);border-radius:12px;cursor:pointer;background:none;display:flex;align-items:center;gap:3px}.cpill.on{background:var(--primary-color);border-color:var(--primary-color)}.chdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}.chdr-text{flex:1;min-width:0}.cvtit{font-size:13px;font-weight:500}.cvkm{font-size:11px;color:var(--secondary-text-color)}.igrid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.iico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;--mdc-icon-size:22px;flex-shrink:0;cursor:default}`;}
 }
 
-// ── Editor stub ────────────────────────────────────────────────────────────────
-
+// Editor stub
 class VehicleServiceCompactCardEditor extends HTMLElement { setConfig(c){this._config=c;} }
 
-// ── Register ──────────────────────────────────────────────────────────────────
-
+// Register
 if(!customElements.get("vehicle-service-compact-card"))
   customElements.define("vehicle-service-compact-card", VehicleServiceCompactCard);
 if(!customElements.get("vehicle-service-compact-card-editor"))
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 
-console.info("%c VEHICLE-SERVICE-COMPACT-CARD %c v1.3.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
+console.info("%c VEHICLE-SERVICE-COMPACT-CARD %c v1.4.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
 
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-compact-card");
-window.customCards.push({
-  type:        "vehicle-service-compact-card",
-  name:        "Vehicle Service Manager – Kompakt",
-  description: "Kompakte Icon-Übersicht mit Farbstatus",
-  preview:     false,
-});
+window.customCards.push({type:"vehicle-service-compact-card", name:"Vehicle Service Manager – Kompakt", description:"Kompakte Icon-Übersicht mit Farbstatus", preview:true});
 window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
