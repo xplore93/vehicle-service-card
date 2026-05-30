@@ -68,7 +68,7 @@ const SVC_ICONS = {
   air_filter:   "mdi:air-filter",
   spark_plugs:  "mdi:lightning-bolt",
   fuel_filter:  "mdi:gas-station",
-  gearbox:      "mdi:car-manual-transmission",
+  gearbox:      "mdi:cog-transfer",
   haldex:       "mdi:car-4wd",
   ac:           "mdi:air-conditioner",
   hu:           "mdi:car-search",

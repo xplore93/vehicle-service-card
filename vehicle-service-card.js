@@ -68,7 +68,7 @@ const SVC_ICONS = {
   air_filter:   "mdi:air-filter",
   spark_plugs:  "mdi:lightning-bolt",
   fuel_filter:  "mdi:gas-station",
-  gearbox:      "mdi:car-manual-transmission",
+  gearbox:      "mdi:cog-transfer",
   haldex:       "mdi:car-4wd",
   ac:           "mdi:air-conditioner",
   hu:           "mdi:car-search",
@@ -696,6 +696,10 @@ class VehicleServiceCard extends HTMLElement {
 
   getCardSize() { return 8; }
   static getStubConfig() { return {}; }
+  static getConfigElement() { return document.createElement('vehicle-service-card-editor'); }
+  static getConfigElement() {
+    return document.createElement("vehicle-service-card-editor");
+  }
 
   _css() { return `
     ha-card{background:var(--card-background-color,#1c1c1e);border-radius:12px}
@@ -896,6 +900,10 @@ class VehicleServiceCompactCard extends HTMLElement {
 
   getCardSize() { return 3; }
   static getStubConfig() { return {}; }
+  static getConfigElement() { return document.createElement('vehicle-service-compact-card-editor'); }
+  static getConfigElement() {
+    return document.createElement("vehicle-service-compact-card-editor");
+  }
 
   _css() { return `
     ha-card{background:var(--card-background-color,#1c1c1e);border-radius:12px}
@@ -935,7 +943,7 @@ window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
 customElements.define("vehicle-service-card",        VehicleServiceCard);
 if (!customElements.get("vehicle-service-compact-card")) { customElements.define("vehicle-service-compact-card", VehicleServiceCompactCard); }
 
-console.info("%c VEHICLE-SERVICE-CARD %c v1.6.0 ", "background:#1976D2;color:#fff;font-weight:bold", "background:#4CAF50;color:#fff");
+console.info("%c VEHICLE-SERVICE-CARD %c v1.1.0 ", "background:#1976D2;color:#fff;font-weight:bold", "background:#4CAF50;color:#fff");
 
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(
@@ -945,4 +953,22 @@ window.customCards.push(
   {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking",        preview:true},
   {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt",description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",                 preview:true}
 );
-window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
+// Minimal editor stubs — required for HA Lovelace card picker discovery
+class VehicleServiceCardEditor extends HTMLElement {
+  setConfig(c){this._config=c;}
+}
+class VehicleServiceCompactCardEditor extends HTMLElement {
+  setConfig(c){this._config=c;}
+}
+if(!customElements.get("vehicle-service-card-editor"))
+  customElements.define("vehicle-service-card-editor", VehicleServiceCardEditor);
+if(!customElements.get("vehicle-service-compact-card-editor"))
+  customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
+
+// Fire ll-custom-cards-updated immediately and with delays
+function _vsmNotifyHA() {
+  window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
+}
+_vsmNotifyHA();
+setTimeout(_vsmNotifyHA, 500);
+setTimeout(_vsmNotifyHA, 2000);
