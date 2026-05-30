@@ -928,28 +928,12 @@ class VehicleServiceCompactCard extends HTMLElement {
 
 if (!customElements.get("vehicle-service-compact-card")) { customElements.define("vehicle-service-compact-card", VehicleServiceCompactCard); }
 
-window.customCards = window.customCards || [];
-window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-compact-card");
-window.customCards.push({
-  type:        "vehicle-service-compact-card",
-  name:        "Vehicle Service Manager \u2013 Kompakt",
-  description: "Kompakte Icon-\u00DCbersicht mit Farbstatus und F\u00E4lligkeitsanzeige",
-  preview:     true,
-  documentationURL: "https://github.com/toxictody1337/vehicle-service-manager",
-});
-window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
-
-
-customElements.define("vehicle-service-card",        VehicleServiceCard);
-if (!customElements.get("vehicle-service-compact-card")) { customElements.define("vehicle-service-compact-card", VehicleServiceCompactCard); }
-
-console.info("%c VEHICLE-SERVICE-CARD %c v1.1.0 ", "background:#1976D2;color:#fff;font-weight:bold", "background:#4CAF50;color:#fff");
-
-window.customCards = window.customCards || [];
-window.customCards = window.customCards.filter(
+var _w = (typeof globalThis !== "undefined" ? globalThis : window);
+_w.customCards = _w.customCards || [];
+_w.customCards = _w.customCards.filter(
   c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card"
 );
-window.customCards.push(
+_w.customCards.push(
   {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking",        preview:true},
   {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt",description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",                 preview:true}
 );
@@ -966,22 +950,14 @@ if(!customElements.get("vehicle-service-compact-card-editor"))
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 
 // Register cards
-window.customCards = window.customCards || [];
-window.customCards = window.customCards.filter(
-  c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card"
-);
-window.customCards.push(
-  {type:"vehicle-service-card", name:"Vehicle Service Manager", description:"Service-Status, Reparaturen und Reifentracking", preview:true},
-  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager – Kompakt", description:"Kompakte Icon-Übersicht mit Farbstatus", preview:true}
-);
-
+var _w = (typeof globalThis !== "undefined" ? globalThis : window);
+_w.customCards = _w.customCards || [];
 // Notify HA - fire on window AND document, immediately and after delays
 // This covers all HA versions and loading scenarios
 function _vsmRegister() {
-  ["window","document"].forEach(function(t) {
-    var target = t === "window" ? window : document;
-    target.dispatchEvent(new CustomEvent("ll-custom-cards-updated", {bubbles:true, composed:true}));
-  });
+  var ev = new CustomEvent("ll-custom-cards-updated", {bubbles:true, composed:true});
+  (typeof globalThis !== "undefined" ? globalThis : window).dispatchEvent(ev);
+  document.dispatchEvent(ev);
 }
 _vsmRegister();
 setTimeout(_vsmRegister, 500);

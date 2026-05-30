@@ -29,7 +29,14 @@ type: custom:vehicle-service-card
 type: custom:vehicle-service-compact-card
 ```
 
-Beide Cards können auch über **Dashboard bearbeiten → + Karte hinzufügen → "Vehicle Service"** direkt aus dem UI-Picker hinzugefügt werden.
+Beide Cards können über **Dashboard bearbeiten → + Karte hinzufügen → "Vehicle Service"** aus dem UI-Picker hinzugefügt werden.
+
+> **Hinweis nach Erstinstallation:** Nach der Installation über HACS muss die Karte einmalig manuell hinzugefügt werden, damit sie im Picker erscheint:
+> 1. Dashboard → Bearbeiten → `+` → **Manuell**
+> 2. Eingeben: `type: custom:vehicle-service-card`
+> 3. Speichern → Browser neu laden (`F5`)
+> 
+> Ab dann erscheinen beide Cards dauerhaft im Picker unter "Vehicle Service".
 
 ## Features
 
