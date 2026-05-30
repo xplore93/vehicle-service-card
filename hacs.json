@@ -1,5 +1,6 @@
 {
   "name": "Vehicle Service Card",
   "render_readme": true,
-  "filename": "vehicle-service-card.js"
+  "filename": "vehicle-service-card.js",
+  "homeassistant": "2023.6.0"
 }
