@@ -2,10 +2,6 @@
 
 Lovelace Dashboard Cards für den [Vehicle Service Manager](https://github.com/toxictody1337/vehicle-service-manager).
 
-Zwei Cards in einem:
-- **`vehicle-service-card`** – vollständiges Dashboard mit Service-Status, Historie, Reparaturen und Reifentracking
-- **`vehicle-service-compact-card`** – kompakte Icon-Leiste mit Farbampel (grün/gelb/rot)
-
 ## Voraussetzung
 
 Die [Vehicle Service Manager Integration](https://github.com/toxictody1337/vehicle-service-manager) muss installiert sein.
@@ -14,36 +10,38 @@ Die [Vehicle Service Manager Integration](https://github.com/toxictody1337/vehic
 
 1. HACS → Frontend → drei Punkte → **Custom repositories**
 2. URL: `https://github.com/toxictody1337/vehicle-service-card`
-3. Kategorie: **Lovelace** → Add
-4. Installieren → Browser neu laden
+3. Kategorie: **Dashboard** → Add → Installieren
+4. **HA neu starten**
+5. Browser neu laden (`Strg+Shift+R`)
 
-## Verwendung
+## Karte hinzufügen
+
+> ⚠️ Diese Card nutzt eine WebSocket-Verbindung zur Integration und erscheint deshalb **nicht im visuellen Card-Picker**. Sie muss einmalig manuell per YAML hinzugefügt werden.
+
+### Schritt-für-Schritt
+
+1. Dashboard öffnen → oben rechts **Bearbeiten** (Stift-Icon)
+2. **+ Karte hinzufügen** → ganz unten **"Manuell"** klicken
+3. YAML eingeben und **Speichern**
 
 ### Vollständige Dashboard-Card
 ```yaml
 type: custom:vehicle-service-card
 ```
 
-### Kompakte Icon-Card
+### Kompakte Icon-Card (für Übersichts-Dashboards)
 ```yaml
 type: custom:vehicle-service-compact-card
 ```
 
-Beide Cards können über **Dashboard bearbeiten → + Karte hinzufügen → "Vehicle Service"** aus dem UI-Picker hinzugefügt werden.
-
-> **Hinweis nach Erstinstallation:** Nach der Installation über HACS muss die Karte einmalig manuell hinzugefügt werden, damit sie im Picker erscheint:
-> 1. Dashboard → Bearbeiten → `+` → **Manuell**
-> 2. Eingeben: `type: custom:vehicle-service-card`
-> 3. Speichern → Browser neu laden (`F5`)
-> 
-> Ab dann erscheinen beide Cards dauerhaft im Picker unter "Vehicle Service".
+---
 
 ## Features
 
-### vehicle-service-card
-- Service-Status mit 3-Farb-Ampel (grün / gelb / rot)
+### vehicle-service-card (Vollversion)
+- Service-Status mit 3-Farb-Ampel (🟢 OK / 🟡 bald fällig / 🔴 fällig)
 - 11 Service-Punkte: Ölwechsel, Inspektion, Bremsflüssigkeit, Filter, Zündkerzen, HU/AU u.v.m.
-- Fortschrittsbalken mit Fälligkeitsanzeige (km + Monate)
+- Fortschrittsbalken mit km- und Monats-Fälligkeit
 - Service-Historie mit Bearbeiten und Löschen
 - Reparaturen & Verschleiß dokumentieren
 - Reifentracking mit Profiltiefe und Verschleißprojektion
@@ -51,12 +49,11 @@ Beide Cards können über **Dashboard bearbeiten → + Karte hinzufügen → "Ve
 - KM-Stand direkt aus der Card aktualisieren
 - Marken-Avatar mit Herstellerfarbe
 
-### vehicle-service-compact-card
+### vehicle-service-compact-card (Kompaktversion)
 - Farbige Icon-Quadrate für jeden Service-Punkt
-- Grün = OK · Gelb = bald fällig · Rot = fällig/überfällig
+- 🟢 OK · 🟡 bald fällig · 🔴 fällig/überfällig
 - Reifenstatus als zusätzliches Icon
-- Tooltip mit Service-Bezeichnung beim Hovern
-- Kompakt – ideal für Übersichts-Dashboards
+- Tooltip beim Hovern zeigt den Service-Namen
 
 ## Farbsystem
 
@@ -65,10 +62,6 @@ Beide Cards können über **Dashboard bearbeiten → + Karte hinzufügen → "Ve
 | 🟢 Grün | Alles OK |
 | 🟡 Gelb | ≥70% verbraucht oder ≤3.000 km / ≤3 Monate |
 | 🔴 Rot | ≥90% verbraucht oder ≤1.000 km / ≤1 Monat |
-
-## Icons
-
-Alle Icons aus dem [Material Design Icons](https://materialdesignicons.com) Set (MDI) – keine externen Abhängigkeiten.
 
 ---
 
