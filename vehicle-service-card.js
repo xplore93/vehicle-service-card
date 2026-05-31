@@ -1,7 +1,16 @@
 /**
- * Vehicle Service Manager - Lovelace Cards v1.4.0
+ * Vehicle Service Manager - Lovelace Cards v1.5.0
  * Includes: vehicle-service-card + vehicle-service-compact-card
  */
+
+// Extract LitElement from HA so we can extend it properly
+// This makes the card discoverable by HA's card picker
+const _LitElement = () => {
+  const el = customElements.get("ha-panel-lovelace") ||
+             customElements.get("hui-view") ||
+             customElements.get("home-assistant");
+  return el ? Object.getPrototypeOf(Object.getPrototypeOf(el.prototype)).constructor : HTMLElement;
+};
 
 const DOMAIN = "vehicle_service";
 
@@ -265,12 +274,47 @@ window.customCards.push(
 );
 
 // Fire registration event - wait for hui-card-picker to be defined then notify
+// Notify HA's picker of our cards
 function _vsmFire() {
   window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
 }
 _vsmFire();
-// Also fire when hui-card-picker is defined (this is when the picker reads customCards)
-customElements.whenDefined("hui-card-picker").then(_vsmFire);
-customElements.whenDefined("hui-card-options").then(_vsmFire);
-setTimeout(_vsmFire, 1000);
-setTimeout(_vsmFire, 3000);
+
+// Patch hui-card-picker: when it opens, inject our cards into its internal list
+// This is needed because HA uses scoped-custom-element-registry
+function _vsmPatchPicker(picker) {
+  if (!picker || picker._vsm_patched) return;
+  picker._vsm_patched = true;
+  // Force picker to refresh its card list
+  if (picker._filterCards) {
+    const orig = picker._filterCards.bind(picker);
+    picker._filterCards = function(cards) {
+      const vsm = (window.customCards || []).filter(c =>
+        c.type === "vehicle-service-card" || c.type === "vehicle-service-compact-card"
+      );
+      return orig([...vsm, ...(cards||[])]);
+    };
+  }
+  // Trigger a re-render
+  if (picker.requestUpdate) picker.requestUpdate();
+}
+
+// Observe DOM for hui-card-picker opening
+const _vsmObs = new MutationObserver(muts => {
+  muts.forEach(m => m.addedNodes.forEach(n => {
+    if (!n.querySelectorAll) return;
+    const pickers = n.tagName === "hui-card-picker"
+      ? [n]
+      : Array.from(n.querySelectorAll("hui-card-picker"));
+    pickers.forEach(_vsmPatchPicker);
+  }));
+});
+_vsmObs.observe(document.documentElement, {childList:true, subtree:true});
+
+customElements.whenDefined("hui-card-picker").then(() => {
+  _vsmFire();
+  // Also patch any already-existing pickers
+  document.querySelectorAll("hui-card-picker").forEach(_vsmPatchPicker);
+});
+setTimeout(_vsmFire, 500);
+setTimeout(_vsmFire, 2000);
