@@ -254,13 +254,23 @@ if(!customElements.get("vehicle-service-card-editor"))
 if(!customElements.get("vehicle-service-compact-card-editor"))
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 
-console.info("%c VEHICLE-SERVICE-CARD %c v1.4.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
+console.info("%c VEHICLE-SERVICE-CARD %c v1.5.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
 
+// Register in window.customCards
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card");
 window.customCards.push(
-  {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking", preview:true},
-  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt", description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",  preview:true}
+  {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking", preview:true, documentationURL:"https://github.com/toxictody1337/vehicle-service-card"},
+  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt", description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",  preview:true, documentationURL:"https://github.com/toxictody1337/vehicle-service-card"}
 );
-window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
-setTimeout(()=>window.dispatchEvent(new CustomEvent("ll-custom-cards-updated")),1000);
+
+// Fire registration event - wait for hui-card-picker to be defined then notify
+function _vsmFire() {
+  window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
+}
+_vsmFire();
+// Also fire when hui-card-picker is defined (this is when the picker reads customCards)
+customElements.whenDefined("hui-card-picker").then(_vsmFire);
+customElements.whenDefined("hui-card-options").then(_vsmFire);
+setTimeout(_vsmFire, 1000);
+setTimeout(_vsmFire, 3000);

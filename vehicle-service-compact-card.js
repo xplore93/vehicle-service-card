@@ -99,8 +99,43 @@ class VehicleServiceCompactCard extends HTMLElement {
   _css(){return`ha-card{background:var(--card-background-color,#1c1c1e);border-radius:12px}.w{padding:10px 12px 12px;font-family:var(--primary-font-family,sans-serif);color:var(--primary-text-color)}.loading{display:flex;align-items:center;justify-content:center;padding:12px}.spin{width:16px;height:16px;border:2px solid var(--divider-color);border-top-color:var(--primary-color);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.cpills{display:flex;gap:4px;margin-bottom:8px}.cpill{padding:2px 6px;border:1px solid var(--divider-color);border-radius:12px;cursor:pointer;background:none;display:flex;align-items:center;gap:3px}.cpill.on{background:var(--primary-color);border-color:var(--primary-color)}.chdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}.chdr-text{flex:1;min-width:0}.cvtit{font-size:13px;font-weight:500}.cvkm{font-size:11px;color:var(--secondary-text-color)}.igrid{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.iico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;--mdc-icon-size:22px;flex-shrink:0;cursor:default}`;}
 }
 
-// Editor stub
+// ── Editor stubs (required for HA card picker) ─────────────────────────────────
+
+class VehicleServiceCardEditor extends HTMLElement { setConfig(c){this._config=c;} }
 class VehicleServiceCompactCardEditor extends HTMLElement { setConfig(c){this._config=c;} }
+
+// ── Register everything (exactly once) ────────────────────────────────────────
+
+if(!customElements.get("vehicle-service-card"))
+  customElements.define("vehicle-service-card", VehicleServiceCard);
+if(!customElements.get("vehicle-service-compact-card"))
+  customElements.define("vehicle-service-compact-card", VehicleServiceCompactCard);
+if(!customElements.get("vehicle-service-card-editor"))
+  customElements.define("vehicle-service-card-editor", VehicleServiceCardEditor);
+if(!customElements.get("vehicle-service-compact-card-editor"))
+  customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
+
+console.info("%c VEHICLE-SERVICE-CARD %c v1.5.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
+
+// Register in window.customCards
+window.customCards = window.customCards || [];
+window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card");
+window.customCards.push(
+  {type:"vehicle-service-card",         name:"Vehicle Service Manager",          description:"Service-Status, Reparaturen und Reifentracking", preview:true, documentationURL:"https://github.com/toxictody1337/vehicle-service-card"},
+  {type:"vehicle-service-compact-card", name:"Vehicle Service Manager \u2013 Kompakt", description:"Kompakte Icon-\u00DCbersicht mit Farbstatus",  preview:true, documentationURL:"https://github.com/toxictody1337/vehicle-service-card"}
+);
+
+// Fire registration event - wait for hui-card-picker to be defined then notify
+function _vsmFire() {
+  window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
+}
+_vsmFire();
+// Also fire when hui-card-picker is defined (this is when the picker reads customCards)
+customElements.whenDefined("hui-card-picker").then(_vsmFire);
+customElements.whenDefined("hui-card-options").then(_vsmFire);
+setTimeout(_vsmFire, 1000);
+setTimeout(_vsmFire, 3000);
+
 
 // Register
 if(!customElements.get("vehicle-service-compact-card"))
@@ -108,9 +143,13 @@ if(!customElements.get("vehicle-service-compact-card"))
 if(!customElements.get("vehicle-service-compact-card-editor"))
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 
-console.info("%c VEHICLE-SERVICE-COMPACT-CARD %c v1.4.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
+console.info("%c VEHICLE-SERVICE-COMPACT-CARD %c v1.5.0 ","background:#1976D2;color:#fff;font-weight:bold","background:#4CAF50;color:#fff");
 
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(c => c.type !== "vehicle-service-compact-card");
 window.customCards.push({type:"vehicle-service-compact-card", name:"Vehicle Service Manager – Kompakt", description:"Kompakte Icon-Übersicht mit Farbstatus", preview:true});
-window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
+
+function _vsmCompactFire() { window.dispatchEvent(new CustomEvent("ll-custom-cards-updated")); }
+_vsmCompactFire();
+customElements.whenDefined("hui-card-picker").then(_vsmCompactFire);
+setTimeout(_vsmCompactFire, 1000);
