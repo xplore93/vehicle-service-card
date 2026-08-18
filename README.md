@@ -1,35 +1,42 @@
 # Vehicle Service Card
 
-Lovelace Dashboard Cards für den [Vehicle Service Manager](https://github.com/toxictody1337/vehicle-service-manager).
+Lovelace Dashboard Cards for the [Vehicle Service Manager](https://github.com/toxictody1337/vehicle-service-manager).
 
-## Voraussetzung
+<p align="center">
+  <a href="./README.md">English</a> ·
+  <a href="./README.de.md">Deutsch</a>
+</p>
 
-Die [Vehicle Service Manager Integration](https://github.com/toxictody1337/vehicle-service-manager) muss installiert sein.
+---
+
+## Prerequisites
+
+The [Vehicle Service Manager integration](https://github.com/toxictody1337/vehicle-service-manager) must be installed.
 
 ## Installation via HACS
 
-1. HACS → Frontend → drei Punkte → **Custom repositories**
+1. HACS → Frontend → three dots → **Custom repositories**
 2. URL: `https://github.com/toxictody1337/vehicle-service-card`
-3. Kategorie: **Dashboard** → Add → Installieren
-4. **HA neu starten**
-5. Browser neu laden (`Strg+Shift+R`)
+3. Category: **Dashboard** → Add → Install
+4. **Restart HA**
+5. Reload the browser (`Ctrl+Shift+R`)
 
-## Karte hinzufügen
+## Adding the card
 
-> ⚠️ Diese Card nutzt eine WebSocket-Verbindung zur Integration und erscheint deshalb **nicht im visuellen Card-Picker**. Sie muss einmalig manuell per YAML hinzugefügt werden.
+> ⚠️ This card uses a WebSocket connection to the integration and therefore **does not appear in the visual card picker**. It must be added manually via YAML once.
 
-### Schritt-für-Schritt
+### Step by step
 
-1. Dashboard öffnen → oben rechts **Bearbeiten** (Stift-Icon)
-2. **+ Karte hinzufügen** → ganz unten **"Manuell"** klicken
-3. YAML eingeben und **Speichern**
+1. Open a dashboard → top right **Edit** (pencil icon)
+2. **+ Add card** → click **"Manually"** at the bottom
+3. Enter the YAML and **Save**
 
-### Vollständige Dashboard-Card
+### Full dashboard card
 ```yaml
 type: custom:vehicle-service-card
 ```
 
-### Kompakte Icon-Card (für Übersichts-Dashboards)
+### Compact icon card (for overview dashboards)
 ```yaml
 type: custom:vehicle-service-compact-card
 ```
@@ -38,32 +45,32 @@ type: custom:vehicle-service-compact-card
 
 ## Features
 
-### vehicle-service-card (Vollversion)
-- Service-Status mit 3-Farb-Ampel (🟢 OK / 🟡 bald fällig / 🔴 fällig)
-- 11 Service-Punkte: Ölwechsel, Inspektion, Bremsflüssigkeit, Filter, Zündkerzen, HU/AU u.v.m.
-- Fortschrittsbalken mit km- und Monats-Fälligkeit
-- Service-Historie mit Bearbeiten und Löschen
-- Reparaturen & Verschleiß dokumentieren
-- Reifentracking mit Profiltiefe und Verschleißprojektion
-- Mehrere Fahrzeuge mit Tab-Auswahl
-- KM-Stand direkt aus der Card aktualisieren
-- Marken-Avatar mit Herstellerfarbe
+### vehicle-service-card (full version)
+- Service status with 3-color traffic light (🟢 OK / 🟡 due soon / 🔴 due)
+- 11 service points: oil change, inspection, brake fluid, filters, spark plugs, HU/AU, and more
+- Progress bars with km- and month-based due dates
+- Service history with edit and delete
+- Document repairs & wear
+- Tire tracking with tread depth and wear projection
+- Multiple vehicles with tab selection
+- Update mileage directly from the card
+- Brand avatar with manufacturer color
 
-### vehicle-service-compact-card (Kompaktversion)
-- Farbige Icon-Quadrate für jeden Service-Punkt
-- 🟢 OK · 🟡 bald fällig · 🔴 fällig/überfällig
-- Reifenstatus als zusätzliches Icon
-- Tooltip beim Hovern zeigt den Service-Namen
+### vehicle-service-compact-card (compact version)
+- Colored icon squares for each service point
+- 🟢 OK · 🟡 due soon · 🔴 due/overdue
+- Tire status as an additional icon
+- Hover tooltip shows the service name
 
-## Farbsystem
+## Color system
 
-| Farbe | Bedeutung |
-|-------|-----------|
-| 🟢 Grün | Alles OK |
-| 🟡 Gelb | ≥70% verbraucht oder ≤3.000 km / ≤3 Monate |
-| 🔴 Rot | ≥90% verbraucht oder ≤1.000 km / ≤1 Monat |
+| Color | Meaning |
+|-------|---------|
+| 🟢 Green | All OK |
+| 🟡 Yellow | ≥70% used or ≤3,000 km / ≤3 months |
+| 🔴 Red | ≥90% used or ≤1,000 km / ≤1 month |
 
 ---
 
-*Entwickelt mit Unterstützung von Claude (Anthropic AI)*  
+*Developed with the support of Claude (Anthropic AI)*  
 MIT License © 2026 toxictody1337
