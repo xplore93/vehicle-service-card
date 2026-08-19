@@ -630,10 +630,20 @@ class VehicleServiceCompactCard extends HTMLElement {
 }
 
 // ── Editor Stubs ───────────────────────────────────────────────────────────────
-class VehicleServiceCardEditor extends HTMLElement { setConfig(c) { this._config = c; } }
-class VehicleServiceCompactCardEditor extends HTMLElement { setConfig(c) { this._config = c; } }
+// These are intentionally minimal: both cards are read-only in their config
+// (all data comes from the WS API), so a no-op editor is correct. If HA complains
+// about a missing editor, this stub is enough to satisfy `getConfigElement`.
+class VehicleServiceCardEditor extends HTMLElement {
+  constructor() { super(); }
+  setConfig(c) { this._config = c; }
+}
+class VehicleServiceCompactCardEditor extends HTMLElement {
+  constructor() { super(); }
+  setConfig(c) { this._config = c; }
+}
 
 // ── Registration ──────────────────────────────────────────────────────────────
+// Idempotent: safe to re-run if the resource is loaded twice (e.g. dev HMR).
 if (!customElements.get("vehicle-service-card")) {
   customElements.define("vehicle-service-card", VehicleServiceCard);
 }
@@ -647,54 +657,39 @@ if (!customElements.get("vehicle-service-compact-card-editor")) {
   customElements.define("vehicle-service-compact-card-editor", VehicleServiceCompactCardEditor);
 }
 
-console.info("%c VEHICLE-SERVICE-CARD %c v1.6.2 ", "background:#1976D2;color:#fff;font-weight:bold", "background:#4CAF50;color:#fff");
-
+// ── Card picker registration ──────────────────────────────────────────────────
+// This is the ONLY thing HA's card picker needs to see the cards in the
+// "Add card" list. The `type` here is the BARE tag (no `custom:` prefix);
+// HA adds the prefix when rendering the card from config.
+//
+// `preview: true` makes the picker render a live thumbnail. Both cards already
+// handle a null `hass` (they render `_placeholder()`), so the preview is safe.
+// If you still don't see the cards, flip `preview` to `false` and check the
+// browser console for load errors — that isolates whether it's a preview-render
+// issue or a registration/timing issue.
 window.customCards = window.customCards || [];
 window.customCards = window.customCards.filter(
   (c) => c.type !== "vehicle-service-card" && c.type !== "vehicle-service-compact-card"
 );
 window.customCards.push(
-  { type: "vehicle-service-card", name: "Vehicle Service Manager", description: t(null, "subtitle"), preview: true, documentationURL: "https://github.com/toxictody1337/vehicle-service-card" },
-  { type: "vehicle-service-compact-card", name: "Vehicle Service Manager – Compact", description: t(null, "subtitle"), preview: true, documentationURL: "https://github.com/toxictody1337/vehicle-service-card" }
+  {
+    type: "vehicle-service-card",
+    name: "Vehicle Service Manager",
+    description: "Service status, repairs and tire tracking",
+    preview: true,
+    documentationURL: "https://github.com/toxictody1337/vehicle-service-card",
+  },
+  {
+    type: "vehicle-service-compact-card",
+    name: "Vehicle Service Manager – Compact",
+    description: "Service status, repairs and tire tracking (compact)",
+    preview: true,
+    documentationURL: "https://github.com/toxictody1337/vehicle-service-card",
+  }
 );
 
-function _vsmFire() {
-  window.dispatchEvent(new CustomEvent("ll-custom-cards-updated"));
-}
-
-function _vsmPatchPicker(picker) {
-  if (!picker || picker._vsm_patched) return;
-  picker._vsm_patched = true;
-  if (picker._filterCards) {
-    const orig = picker._filterCards.bind(picker);
-    picker._filterCards = function (cards) {
-      const vsm = (window.customCards || []).filter(
-        (c) => c.type === "vehicle-service-card" || c.type === "vehicle-service-compact-card"
-      );
-      return orig([...vsm, ...(cards || [])]);
-    };
-  }
-  if (picker.requestUpdate) picker.requestUpdate();
-}
-
-const _vsmObs = new MutationObserver((mutations) => {
-  mutations.forEach((m) =>
-    m.addedNodes.forEach((node) => {
-      if (!node.querySelectorAll) return;
-      const pickers = node.tagName === "hui-card-picker"
-        ? [node]
-        : Array.from(node.querySelectorAll("hui-card-picker"));
-      pickers.forEach(_vsmPatchPicker);
-    })
-  );
-});
-
-_vsmObs.observe(document.documentElement, { childList: true, subtree: true });
-
-customElements.whenDefined("hui-card-picker").then(() => {
-  _vsmFire();
-  document.querySelectorAll("hui-card-picker").forEach(_vsmPatchPicker);
-});
-
-setTimeout(_vsmFire, 500);
-setTimeout(_vsmFire, 2000);
+console.info(
+  "%c VEHICLE-SERVICE-CARD %c v1.6.3 ",
+  "background:#1976D2;color:#fff;font-weight:bold",
+  "background:#4CAF50;color:#fff"
+);
