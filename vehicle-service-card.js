@@ -689,7 +689,7 @@ window.customCards.push(
 );
 
 console.info(
-  "%c VEHICLE-SERVICE-CARD %c v1.6.3 ",
+  "%c VEHICLE-SERVICE-CARD %c v1.6.2 ",
   "background:#1976D2;color:#fff;font-weight:bold",
   "background:#4CAF50;color:#fff"
 );
